@@ -5,10 +5,14 @@ print("Loading model...")
 model = joblib.load("xgboost_model.pkl")
 
 print("Extracting features...")
-audio = "voice.wav"
-features = extract_features(audio)
+#audio = "voice.wav"
+features = extract_features("voice.wav")
 
 print("Features extracted")
+#print(features)
+
+proba = model.predict_proba([features])
+print("Probability:", proba)
 
 prediction = model.predict([features])
 

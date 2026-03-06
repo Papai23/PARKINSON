@@ -8,6 +8,7 @@ def extract_features(audio):
 
     sound = parselmouth.Sound(audio)
 
+    y, sr = librosa.load(audio, sr=44100)
     pitch = call(sound, "To Pitch", 0.0, 75, 500)
 
     Fo = call(pitch, "Get mean", 0, 0, "Hertz")
@@ -24,21 +25,16 @@ def extract_features(audio):
 
     hnr = call(harmonicity,"Get mean",0,0)
 
-    y,sr = librosa.load(audio)
 
-   # rpde = nolds.sampen(y)
-    rpde = 0
-    #dfa = nolds.dfa(y)
-    dfa = 0
+    rpde = nolds.sampen(y)
+    dfa = nolds.dfa(y)
 
     spread1 = np.std(y)
     spread2 = np.var(y)
 
-    #d2 = nolds.corr_dim(y,10)
-    d2 = 0
-
-    #ppe = np.std(np.diff(y))
-    ppe = 0
+    d2 = nolds.corr_dim(y,10)
+    pitch_values = librosa.yin(y, fmin=75, fmax=500)
+    ppe = np.std(np.diff(y))
     pointProcess = call(sound, "To PointProcess (periodic, cc)", 75, 500)
 
     jitter_percent = call(pointProcess, "Get jitter (local)", 0,0,0.0001,0.02,1.3)
@@ -67,12 +63,6 @@ def extract_features(audio):
     hnr = call(harmonicity, "Get mean", 0, 0)
 
     nhr = 1 / (hnr + 1e-6)
-    rpde = 0
-    dfa = 0
-    spread1 = 0
-    spread2 = 0
-    d2 = 0
-    ppe = 0
     features = [Fo, Fhi, Flo,
     jitter_percent,
     jitter_abs,
